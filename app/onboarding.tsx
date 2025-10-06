@@ -3,7 +3,6 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Animat
 import { Sparkles, User, Check } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { router } from 'expo-router';
 
 const AVATARS = [
   'Sparkles', 'Zap', 'Heart', 'Star', 'Smile', 'Sun',
@@ -86,8 +85,6 @@ export default function OnboardingScreen() {
         setLoading(false);
         return;
       }
-
-      router.replace('/(tabs)');
     } catch (error: any) {
       setError(error.message || 'Failed to create profile');
       setLoading(false);

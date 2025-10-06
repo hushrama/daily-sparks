@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Sparkles } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
-import { router } from 'expo-router';
 
 export default function AuthScreen() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -28,8 +27,6 @@ export default function AuthScreen() {
     if (error) {
       setError(error.message);
       setLoading(false);
-    } else {
-      router.replace('/(tabs)');
     }
   };
 
