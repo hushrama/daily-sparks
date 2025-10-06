@@ -26,8 +26,9 @@ export default function AuthScreen() {
 
     if (error) {
       setError(error.message);
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
   return (
