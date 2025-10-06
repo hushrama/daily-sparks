@@ -36,7 +36,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({ email, password });
+
+    if (!error && data.user) {
+      const avatars = ['Sparkles', 'Star', 'Heart', 'Sun', 'Moon', 'Flame', 'Gem', 'Crown'];
+      const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
+      const defaultUsername = `user_${data.user.id.substring(0, 8)}`;
+
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert([
+          {
+            id: data.user.id,
+            username: defaultUsername,
+            avatar: randomAvatar,
+          },
+        ]);
+
+      if (profileError) {
+        console.error('Error creating profile:', profileError);
+      }
+    }
+
     return { error };
   };
 

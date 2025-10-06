@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Sparkles, LogOut, Calendar } from 'lucide-react-native';
+import { Sparkles, LogOut, Calendar, Edit2 } from 'lucide-react-native';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { router } from 'expo-router';
+import EditProfileModal from '@/components/EditProfileModal';
 
 type Profile = {
   username: string;
@@ -20,6 +21,7 @@ export default function ProfileScreen() {
   const [sparks, setSparks] = useState<Spark[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editModalVisible, setEditModalVisible] = useState(false);
   const { user, signOut } = useAuth();
 
   const fetchUserData = async () => {
@@ -36,7 +38,7 @@ export default function ProfileScreen() {
           .from('profiles')
           .select('username, avatar')
           .eq('id', user.id)
-          .single(),
+          .maybeSingle(),
       ]);
 
       if (sparksResult.error) throw sparksResult.error;
@@ -105,10 +107,20 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-          <LogOut size={18} color="#FF5252" />
-          <Text style={styles.signOutText}>Sign Out</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonGroup}>
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => setEditModalVisible(true)}
+          >
+            <Edit2 size={18} color="#2196F3" />
+            <Text style={styles.editText}>Edit Profile</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+            <LogOut size={18} color="#FF5252" />
+            <Text style={styles.signOutText}>Sign Out</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.sparksSection}>
@@ -128,6 +140,14 @@ export default function ProfileScreen() {
           }
         />
       </View>
+
+      <EditProfileModal
+        visible={editModalVisible}
+        onClose={() => setEditModalVisible(false)}
+        currentUsername={profile?.username || ''}
+        currentAvatar={profile?.avatar || 'Sparkles'}
+        onUpdate={fetchUserData}
+      />
     </View>
   );
 }
@@ -191,6 +211,26 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 12,
     color: '#666',
+  },
+  buttonGroup: {
+    gap: 12,
+  },
+  editButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#E3F2FD',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#BBDEFB',
+  },
+  editText: {
+    color: '#2196F3',
+    fontSize: 16,
+    fontWeight: '600',
   },
   signOutButton: {
     flexDirection: 'row',

@@ -66,7 +66,7 @@ export default function SparkModal({ visible, onClose, onSubmit, initialContent 
           <View style={styles.content}>
             <TextInput
               style={styles.input}
-              placeholder="What's inspiring you today?"
+              placeholder="What's your spark today? Share something that inspired you, a thought you had, or wisdom you want to pass on..."
               placeholderTextColor="#999"
               value={content}
               onChangeText={setContent}
